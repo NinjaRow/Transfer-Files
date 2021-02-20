@@ -1,0 +1,10 @@
+﻿  main.cpp
+C:\CSCI 3090\Assignment 1\main.cpp(81,38): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\CSCI 3090\Assignment 1\main.cpp(108,21): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\CSCI 3090\Assignment 1\main.cpp(109,21): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\CSCI 3090\Assignment 1\main.cpp(110,21): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\CSCI 3090\Assignment 1\main.cpp(114,9): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'int'
+C:\CSCI 3090\Assignment 1\main.cpp(114,9): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 2 has type 'int'
+C:\CSCI 3090\Assignment 1\main.cpp(114,9): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 3 has type 'int'
+C:\CSCI 3090\Assignment 1\main.cpp(143,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Example4.vcxproj -> C:\CSCI 3090\Assignment 1\x64\Debug\Example4.exe
