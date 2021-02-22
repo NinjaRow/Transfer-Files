@@ -53,7 +53,7 @@ void init() {
 	int fs;
 	GLfloat* vertices;
 	GLfloat* normals;
-	GLint* indices;
+	GLuint* indices;
 	int* count;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
@@ -77,7 +77,7 @@ void init() {
 	}
 
 	/*  Retrieve the vertex coordinate data */
-
+	
 	nv = shapes[0].mesh.positions.size();
 	vertices = new GLfloat[nv];
 	for (i = 0; i < nv; i++) {
@@ -113,45 +113,68 @@ void init() {
 	printf("Z range: %f %f\n", zmin, zmax);
 	printf("center: %f %f %f\n", cx, cy, cz);
 
-	/*  Retrieve the vertex normals */
-
-	nn = nv;
-	normals = new GLfloat[nn];
-	count = new int[nv / 3];
-	/*for (i = 0; i < nn; i++) {
-		normals[i] = shapes[0].mesh.normals[i];
-
-	}*/
-	printf("%d\n", nn);
-	for (i = 0; i < nn / 3; i++) {
-		float v1[] = { vertices[3 * i], vertices[3 * i + 1], vertices[3 * i + 2] };
-		float v2[] = { vertices[3 * (i + 1)], vertices[3 * (i + 1) + 1], vertices[3 * (i + 1) + 2] };
-		float v3[] = { vertices[3 * (i + 2)], vertices[3 * (i + 2) + 1], vertices[3 * (i + 2) + 2] };
-
-		glm::vec3 cross1 = glm::vec3(v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[1]);
-		glm::vec3 cross2 = glm::vec3(v3[0] - v2[0], v3[1] - v2[1], v3[2] - v2[1]);
-		glm::vec3 cross = glm::cross(cross1, cross2);
-		GLfloat* result = glm::value_ptr(cross);
-
-		normals[i] = result[0];
-		normals[i + 1] = result[1];
-		normals[i + 2] = result[2];
-		count[i]++;
-
-	}
+	
+	
 	/*  Retrieve the triangle indices */
 
 	ni = shapes[0].mesh.indices.size();
 	triangles = ni / 3;
-	indices = new GLint[ni];
+	indices = new GLuint[ni];
 	for (i = 0; i < ni; i++) {
 		indices[i] = shapes[0].mesh.indices[i];
 
 	}
 	
-	printf("nv: %d\n", nv);
-	printf("nn: %d\n", nn);
-	printf("ni: %d\n", ni);
+	/*  Retrieve the vertex normals */
+
+	nn = nv;
+	normals = new GLfloat[nn]{0};
+	count = new int[nn / 3]{0};
+	for (i = 0; i < ni / 3; i++) {
+		
+		int n = i*3;
+
+		// compute polygon normal
+		int index1 = 3 * indices[n];
+		int index2 = 3 * indices[n + 1];
+		int index3 = 3 * indices[n + 2];
+
+		glm::vec3 v1 = { vertices[index1], vertices[index1 + 1], vertices[index1 + 2] };
+		glm::vec3 v2 = { vertices[index2], vertices[index2 + 1], vertices[index2 + 2] };
+		glm::vec3 v3 = { vertices[index3], vertices[index3 + 1], vertices[index3 + 2] };
+
+		glm::vec3 cross1 = v2-v1;
+		glm::vec3 cross2 = v3-v2;
+		glm::vec3 cross = glm::cross(cross1, cross2);
+
+		//add normals and increment count
+		//v1 normal
+		normals[index1] += cross.x;
+		normals[index1+1] += cross.y;
+		normals[index1+2] += cross.z;
+
+		//v2 normal
+		normals[index2] += cross.x;
+		normals[index2+1] += cross.y;
+		normals[index2+2] += cross.z;
+
+		//v3 normal
+		normals[index3] += cross.x;
+		normals[index3+1] += cross.y;
+		normals[index3+2] += cross.z;
+
+		count[index1 / 3]++;
+		count[index2 / 3]++;
+		count[index3 / 3]++;
+
+	}
+	//divide normals by count
+	for (i = 0; i < nn / 3; i++){
+		normals[3 * i] /= count[i];
+		normals[3 * i + 1] /= count[i];
+		normals[3 * i + 2] /= count[i];
+	}
+
 	/*
 	 *  load the vertex coordinate data
 	 */
